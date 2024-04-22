@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengzhen.yixinli.mapper.UserMapper">
+    <resultMap id="BaseResultMap" type="com.pengzhen.yixinli.entity.User">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="email" property="email"/>
+        <result column="name" property="name"/>
+        <result column="address" property="address"/>
+        <result column="phone" property="phone"/>
+        <result column="tocheck" property="tocheck"/>
+        <result column="user_type" property="userType"/>
+    </resultMap>
+    <delete id="deleteByPrimaryKey">
+    delete from `sys_user`
+    where id = #{id}
+  </delete>
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+    insert into `sys_user` (username, password, email, name, address, phone,tocheck,user_type)
+    values (#{username}, #{password}, #{email}, #{name}, #{address}, #{phone},#{tocheck}, #{userType})
+  </insert>
+    <update id="updateByPrimaryKey">
+    update `sys_user`
+    set username = #{username},
+      password = #{password},
+      email = #{email},
+      name = #{name},
+      address = #{address},
+      phone = #{phone},
+      tocheck=#{tocheck},
+      user_type=#{userType}
+    where id = #{id}
+  </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select id, username, password, email, name, address, phone,tocheck,user_type
+    from `sys_user`
+    where id = #{id}
+  </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+    select id, username, password, email, name, address, phone,tocheck,user_type
+    from `sys_user`
+  </select>
+    <select id="count" resultType="int">
+      select count(*) from sys_user;
+  </select>
+    <select id="selectByUsername" resultMap="BaseResultMap">
+      select id, username, password, email, name, address, phone,tocheck,user_type
+    from `sys_user` where username=#{username}
+    </select>
+    <select id="loginByUser" resultMap="BaseResultMap">
+         select id, username, password, email, name, address, phone,tocheck,user_type
+    from `sys_user` where username=#{username} AND password=#{password}
+    </select>
+    <select id="getByUsername" resultMap="BaseResultMap">
+          select id, username, password, email, name, address, phone,tocheck,user_type
+          from `sys_user` where username=#{username}
+    </select>
+</mapper>

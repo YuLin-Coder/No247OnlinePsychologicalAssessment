@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title> 文章列表</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../layuiadmin/layui/css/layui.css" th:href="@{/layuiadmin/layui/css/layui.css}"
+          media="all">
+    <link rel="stylesheet" href="../layuiadmin/style/admin.css" th:href="@{/layuiadmin/style/admin.css}" media="all">
+</head>
+<body class="layui-layout-body">
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+                <!--高级查询模块-->
+                <form class="layui-form layui-from-pane" action="" method="post">
+                    <div class="layui-card-body">
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">用户登入名:</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="username" placeholder="请输入需要查询的登入名"
+                                           class="layui-input">
+                                </div>
+                            </div>
+                            <button class="layui-btn" lay-submit lay-filter="queryForm"
+                                    style="margin-left: 120px">立即查询
+                            </button>
+                        </div>
+                        <table id="demo" lay-filter="test"></table>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!--表格-->
+        <table id="user-list" lay-filter="user-list"></table>
+        <script type="text/html" id="table-useradmin-webuser">
+            {{#  if(d.userType == '超级管理员'){ }}
+            <a class="layui-btn layui-btn-disabled layui-btn-xs">重置密码</a>
+            <a class="layui-btn layui-btn-disabled layui-btn-xs">编辑</a>
+            <a class="layui-btn layui-btn-disabled layui-btn-xs">删除</a>
+            {{#  } else { }}
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="pwd">重置密码</a>
+            <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+            {{#  } }}
+        </script>
+    </div>
+</div>
+<!--隐藏模块-->
+<div class="layui-row" id="popUpdateEmp" style="display:none;">
+    <div class="layui-col-md10">
+        <form class="layui-form" action="" style="margin-top:20px">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">用户ID</label>
+                    <div class="layui-input-inline">
+                        <input id="id" type="text" name="id" lay-verify="required" readonly autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">用户登入名</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="username" readonly name="username" lay-verify="required"
+                               autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">用户邮箱</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="email" name="email" lay-verify="required" autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">用户名</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="name" name="name" lay-verify="required" autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">用户地址</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="address" name="address" lay-verify="required" autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">用户电话</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="phone" name="phone" lay-verify="required" autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+
+            </div>
+            <button class="layui-btn" lay-submit lay-filter="updateType"
+                    style="margin-left: 120px">立即提交
+            </button>
+        </form>
+    </div>
+</div>
+</div>
+<script src="../layuiadmin/layui/layui.js" th:src="@{/layuiadmin/layui/layui.js}"></script>
+<script>
+    layui.config({
+        base: '../../layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use('index');
+</script>
+<script th:inline="none">
+    layui.use(['table', 'form'], function (exports) {
+        var $ = layui.$, table = layui.table, form = layui.form;
+        //用户管理
+        table.render({
+            elem: '#user-list'
+            , url: '/admin/user/tableList' //商品接口
+            , cols: [
+                [
+                    {type: 'checkbox', fixed: 'left'}
+                    , {field: 'id', width: 100, title: 'ID', width: 80, sort: true}
+                    , {field: 'username', title: '用户登入名', width: 100}
+                    , {field: 'password', title: '用户密码',}
+                    , {field: 'email', title: '用户邮箱', width: 100}
+                    , {field: 'name', title: '用户名', width: 80}
+                    , {field: 'address', title: '用户地址',}
+                    , {field: 'phone', title: '用户电话', width: 120}
+                    , {field: 'userType', title: '用户类型', width: 120}
+                    , {title: '操作', width: 210, align: 'center', fixed: 'right', toolbar: '#table-useradmin-webuser'}
+                ]
+            ], page: true
+            , limit: 10
+            , height: 'full-220'
+            , text: '对不起，加载出现异常！'
+        });
+
+        //监听行工具事件
+        table.on('tool(user-list)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'del') {
+                layer.confirm('真的删除吗！', function (index) {
+
+                    //异步像服务器发送删除请求
+                    $.ajax({
+                        url: '/admin/user/del',
+                        type: 'GET',
+                        data: {'id': data.id},
+                        success: function (result) {
+                            if (result.success == true) {
+                                layer.msg("删除成功!" + result, {icon: 6});
+                                obj.del();
+                                layer.close(index);
+
+                            } else {
+                                layer.msg("删除失败!" + result, {icon: 5});
+                                layer.close(index);
+                            }
+                        },
+                        error: function (errorMsg) {
+                            layer.msg("数据异常!" + errorMsg, {icon: 5});
+                            layer.close(index);
+                            location.reload();
+                        },
+                    });
+                });
+                //更新用户
+            } else if (obj.event == 'edit') {
+                layer.open({
+                    type: 1,
+                    title: "更新用户",
+                    area: ['480px', '510px'],
+                    content: $("#popUpdateEmp"),
+                    success: function () {
+                        //回显数据
+                        $("#id").val(data.id);
+                        $("#username").val(data.username);
+                        $("#email").val(data.email);
+                        $("#name").val(data.name);
+                        $("#address").val(data.address);
+                        $("#phone").val(data.phone);
+                    },
+                });
+            } else if (obj.event == 'pwd') {
+                //发送ajax重置用户密码
+                layer.confirm('真的重置用户为\t' + data.username + "\t的密码吗！", function (index) {
+
+                    //异步像服务器发送删除请求
+                    $.ajax({
+                        url: '/admin/user/resetPwd',
+                        type: 'GET',
+                        data: {'id': data.id},
+                        success: function (result) {
+                            if (result.success == true) {
+                                layer.msg("重置密码成功!【默认密码为：123456】", {icon: 6});
+                                location.reload();
+                                layer.close(index);
+
+                            } else {
+                                layer.msg("重置密码失败!" + result, {icon: 5});
+                                layer.close(index);
+                            }
+                        },
+                        error: function (errorMsg) {
+                            layer.msg("数据异常!" + errorMsg, {icon: 5});
+                            layer.close(index);
+                            location.reload();
+                        },
+                    });
+                });
+            }
+        });
+        //更新操作
+        form.on('submit(updateType)', function (data) {
+            console.log(data);
+            //发送ajax请求
+            $.ajax({
+                url: '/admin/user/update',
+                data: JSON.stringify(data.field),
+                type: 'POST',
+                contentType: 'application/json',  //数据类型格式
+                success: function (result) {
+                    if (result.success == true) {
+                        layer.closeAll();
+                        layer.msg('更新成功', {time: 1 * 1000}, function () {
+                            location.reload();
+                        });
+                    } else {
+                        layer.closeAll();
+                        layer.msg('更新失败', {time: 1 * 1000}, function () {
+                            location.reload();
+                        });
+                    }
+                },
+                error: function (errorMsg) {
+                    alert("数据异常！" + errorMsg);
+                    location.reload();
+                },
+            });
+            return false;
+        });
+
+        //高级查询操作
+        form.on('submit(queryForm)', function (data) {
+            table.render({
+                elem: '#user-list'
+                , url: '/admin/user/tableList?page=1&limit=10&keyword=' + data.field.username //商品接口
+                , cols: [[
+                    {type: 'checkbox', fixed: 'left'}
+                    , {field: 'id', width: 100, title: 'ID', width: 80, sort: true}
+                    , {field: 'username', title: '用户登入名', width: 100}
+                    , {field: 'password', title: '用户密码',}
+                    , {field: 'email', title: '用户邮箱', width: 100}
+                    , {field: 'name', title: '用户名', width: 80}
+                    , {field: 'address', title: '用户地址',}
+                    , {field: 'phone', title: '用户电话', width: 120}
+                    , {field: 'userType', title: '用户类型', width: 120}
+                    , {title: '操作', width: 210, align: 'center', fixed: 'right', toolbar: '#table-useradmin-webuser'}
+                ]]
+                , page: true
+                , limit: 10
+                , height: 'full-220'
+                , text: '对不起，加载出现异常！'
+            });
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

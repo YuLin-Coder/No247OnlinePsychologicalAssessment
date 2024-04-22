@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengzhen.yixinli.mapper.LabelMapper">
+  <resultMap id="BaseResultMap" type="com.pengzhen.yixinli.entity.Label">
+    <id column="id" property="id" />
+    <result column="label_name" property="labelName" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey">
+    delete from `sys_label`
+    where id = #{id}
+  </delete>
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+    insert into `sys_label` (label_name)
+    values (#{label_name})
+  </insert>
+  <update id="updateByPrimaryKey">
+    update `sys_label`
+    set label_name = #{label_name}
+    where id = #{id}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select id, label_name
+    from `sys_label`
+    where id = #{id}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, label_name
+    from `sys_label`
+  </select>
+</mapper>

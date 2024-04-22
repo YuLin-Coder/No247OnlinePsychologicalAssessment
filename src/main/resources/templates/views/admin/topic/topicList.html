@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>题目</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../layuiadmin/layui/css/layui.css" th:href="@{/layuiadmin/layui/css/layui.css}"
+          media="all">
+    <link rel="stylesheet" href="../layuiadmin/style/admin.css" th:href="@{/layuiadmin/style/admin.css}" media="all">
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <form class="layui-form" action="" method="post">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">题目编号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="id" name="id" placeholder="请输入题目编号"
+                                   autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <button class="layui-btn" lay-submit lay-filter="queryForm"
+                                style="margin-left: 120px">立即查询
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="layui-card-body">
+            <!--表格-->
+            <table id="LAY-app-content-list" lay-filter="LAY-app-content-list"></table>
+            <script type="text/html" id="table-content-list">
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i
+                        class="layui-icon layui-icon-edit"></i>修改</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i
+                        class="layui-icon layui-icon-delete"></i>删除</a>
+            </script>
+        </div>
+    </div>
+</div>
+
+<div class="layui-row" id="popUpdateAticle" style="display:none;">
+    <form class="layui-form" method="post">
+        <div style="padding: 20px; background-color: #F2F2F2;">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-card-body">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">题目编号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="ids" name="id" readonly lay-verify="required"
+                                   autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">题目内容</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="topicContent" id="topicContent" lay-verify="required"
+                                   placeholder="请输入用户"
+                                   autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">参考详解</label>
+                        <div class="layui-input-inline">
+            <textarea id="referAnswer" name="referAnswer" lay-verify="required" style="width: 400px; height: 150px;"
+                      autocomplete="off"
+                      class="layui-textarea"></textarea>
+                        </div>
+                    </div>
+                    <button class="layui-btn" lay-submit lay-filter="formBtn"
+                            style="margin-left: 120px">立即修改
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="layui-row" id="popUpdateAdd" style="display:none;">
+    <form class="layui-form" method="post">
+        <div style="padding: 20px; background-color: #F2F2F2;">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-card-body">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">题目内容</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="topicContent" id="topicContent1" lay-verify="required"
+                                   placeholder="请输入用户"
+                                   autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">参考详解</label>
+                        <div class="layui-input-inline">
+            <textarea id="referAnswer1" name="referAnswer" lay-verify="required" style="width: 400px; height: 150px;"
+                      autocomplete="off"
+                      class="layui-textarea"></textarea>
+                        </div>
+                    </div>
+                    <button class="layui-btn" lay-submit lay-filter="formAddBtn"
+                            style="margin-left: 120px">立即添加
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script src="../layuiadmin/layui/layui.js" th:src="@{/layuiadmin/layui/layui.js}"></script>
+<script type="text/javascript">
+    layui.config({
+        base: '../../layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use('index', function () {
+    });
+</script>
+<script>
+    layui.use(['table', 'form'], function (exports) {
+        var $ = layui.$, table = layui.table, form = layui.form;
+        //表格
+        table.render({
+            elem: '#LAY-app-content-list'
+            , url: '/admin/topic/list'//模拟接口
+            , cols: [
+                [
+                    {type: 'checkbox', fixed: 'left'}
+                    , {field: 'id', width: 120, title: '题目编号', sort: true}
+                    , {field: 'topicContent', title: '题目内容', width: 250}
+                    , {field: 'referAnswer', title: '参考详解', width: 300}
+                    , {field: 'topicTime', title: '创建时间', width: 160}
+                    , {field: 'userOp', title: '操作用户', align: 'center'}
+                    , {title: '操作', minWidth: 250, align: 'center', fixed: 'right', toolbar: '#table-content-list'}
+                ]
+            ]
+            , page: true
+            , limit: 10
+            , height: 'full-220'
+            , text: '对不起，加载出现异常！'
+        });
+
+
+        //监听查询点击事件
+        form.on('submit(queryForm)', function (data) {
+            table.render({
+                elem: '#LAY-app-content-list'
+                ,
+                height: 312
+                ,
+                url: '/admin/topic/list?keyword1=' + data.field.id//后台数据接口
+                ,
+                page: true
+                ,
+                cols: [
+                    [
+                        {type: 'checkbox', fixed: 'left'}
+                        , {field: 'id', width: 100, title: '题目编号', sort: true}
+                        , {field: 'topicContent', title: '题目内容', width: 250}
+                        , {field: 'referAnswer', title: '参考详解', width: 300}
+                        , {field: 'topicTime', title: '创建时间', width: 200}
+                        , {field: 'userOp', title: '操作用户', width: 120, align: 'center'}
+                        , {title: '操作', minWidth: 150, align: 'center', fixed: 'right', toolbar: '#table-content-list'}
+                    ]
+                ]
+            });
+            return false;
+        });
+        //监听行工具事件
+        table.on('tool(LAY-app-content-list)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'del') {
+                layer.confirm('真的删除ID为\t' + data.id + "\t的题目吗！", function (index) {
+                    //异步像服务器发送删除请求
+                    $.ajax({
+                        url: '/admin/topic/del',
+                        type: 'GET',
+                        data: {'id': data.id},
+                        success: function (result) {
+                            console.log("数据返回成功！" + result.success)
+                            if (result.status == true) {
+                                layer.msg("删除成功!" + result, {icon: 6});
+                                obj.del();
+                                layer.close(index);
+                                location.reload();
+                            } else {
+                                layer.msg("删除失败!" + result, {icon: 5});
+                                layer.close(index);
+                            }
+                        },
+                        error: function (errorMsg) {
+                            layer.msg("数据异常!" + errorMsg, {icon: 5});
+                            layer.close(index);
+                            location.reload();
+                        },
+                    });
+                });
+            } else if (obj.event == 'edit') {
+                layer.open({
+                    type: 1,
+                    title: "题目编辑",
+                    area: ['600px', '500px'],
+                    content: $("#popUpdateAticle"),
+                    success: function () {
+                        //回显数据
+                        $("#ids").val(data.id);
+                        $("#topicContent").val(data.topicContent);
+                        $("#referAnswer").val(data.referAnswer);
+                        form.render();
+                    },
+                });
+            } else if (obj.event == "add") {
+                layer.open({
+                    type: 1,
+                    title: "题目添加",
+                    area: ['600px', '500px'],
+                    content: $("#popUpdateAdd"),
+                });
+            }
+
+            //更新操作
+            form.on('submit(formBtn)', function (data) {
+                console.log(data);
+                //发送ajax请求
+                $.ajax({
+                    url: '/admin/topic/update',
+                    data: JSON.stringify(data.field),
+                    type: 'POST',
+                    contentType: 'application/json',  //数据类型格式
+                    success: function (result) {
+                        if (result.status = true) {
+                            layer.closeAll();
+                            layer.msg('更新成功', {time: 1 * 1000}, function () {
+                                location.reload();
+                            });
+                        } else {
+                            layer.closeAll();
+                            layer.msg('更新失败', {time: 1 * 1000}, function () {
+                                location.reload();
+                            });
+                        }
+                    },
+                    error: function (errorMsg) {
+                        alert("数据异常！" + errorMsg);
+                        location.reload();
+                    },
+                });
+                return false;
+            });
+        });
+    });
+
+</script>
+</body>
+</html>

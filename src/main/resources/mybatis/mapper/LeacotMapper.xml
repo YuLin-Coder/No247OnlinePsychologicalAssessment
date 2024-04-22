@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengzhen.yixinli.mapper.LeacotMapper">
+    <resultMap id="BaseResultMap" type="com.pengzhen.yixinli.entity.Leacot">
+        <id column="id" property="id"/>
+        <result column="content" property="content"/>
+        <result column="leacots_time" property="leacotsTime"/>
+        <result column="leacots_user" property="leacotsUser"/>
+        <result column="status" property="status"/>
+        <!--关联映射-->
+        <association property="replyId" javaType="com.pengzhen.yixinli.entity.Reply">
+            <id property="id" column="id"/>
+            <result property="replyContent" column="reply_content"/>
+            <result property="replyTime" column="reply_time"/>
+            <result property="replyUser" column="reply_user"/>
+        </association>
+    </resultMap>
+    <delete id="deleteByPrimaryKey">
+    delete from `sys_leacot`
+    where id = #{id}
+  </delete>
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+    insert into `sys_leacot` (content, leacots_time, leacots_user, reply_id,status)
+    values (#{content}, #{leacotsTime}, #{leacotsUser}, #{replyId.id},#{status})
+  </insert>
+    <update id="updateByPrimaryKey">
+    update `sys_leacot`
+    set content = #{content},
+      leacots_time = #{leacotsTime},
+      leacots_user = #{leacotsUser},
+      reply_id = #{replyId.id},
+      status =#{status}
+    where id = #{id}
+  </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+       SELECT
+        le.id,
+        le.content,
+        le.leacots_time,
+        le.leacots_user,
+        re.id as replyId,
+        le.status,
+        re.reply_content,
+        re.reply_time,
+        re.reply_user
+    FROM
+        sys_leacot le
+        JOIN sys_reply re ON le.reply_id = re.id
+    where le.id = #{id}
+  </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT
+        le.id,
+        le.content,
+        le.leacots_time,
+        le.leacots_user,
+        re.id AS replyId,
+        le.`status`,
+        re.reply_content,
+        re.reply_time,
+        re.reply_user
+    FROM
+        sys_leacot le
+        JOIN sys_reply re ON le.reply_id = re.id ORDER BY le.leacots_time DESC
+  </select>
+    <select id="count" resultType="int">
+      select count(*) from sys_reply
+    </select>
+    <select id="selectByKeyWord" resultMap="BaseResultMap" parameterType="String">
+        SELECT
+        le.id,
+        le.content,
+        le.leacots_time,
+        le.leacots_user,
+        re.id as replyId,
+        le.status,
+        re.reply_content,
+        re.reply_time,
+        re.reply_user
+        FROM
+        sys_leacot le
+        JOIN sys_reply re ON le.reply_id = re.id
+        <where>
+            <if test="_parameter !=null and _parameter != '' and _parameter !='undefined' ">
+                le.leacots_user=#{keyword1}
+            </if>
+        </where>
+    </select>
+</mapper>

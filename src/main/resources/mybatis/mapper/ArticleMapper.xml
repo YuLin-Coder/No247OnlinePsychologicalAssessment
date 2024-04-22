@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengzhen.yixinli.mapper.ArticleMapper">
+    <resultMap id="BaseResultMap" type="com.pengzhen.yixinli.entity.Article">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="author" property="author"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+        <association property="label" javaType="com.pengzhen.yixinli.entity.Label">
+            <id property="id" column="id"/>
+            <result property="labelName" column="label_name"/>
+        </association>
+    </resultMap>
+    <delete id="deleteByPrimaryKey">
+    delete from `sys_article`
+    where id = #{id}
+  </delete>
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+    insert into `sys_article` (label, title, content, author, status, create_time)
+    values (#{label.id}, #{title}, #{content}, #{author}, #{status}, #{createTime} )
+  </insert>
+    <update id="updateByPrimaryKey">
+    update `sys_article`
+    set label = #{label.id},
+      title = #{title},
+      content = #{content},
+      author = #{author},
+      status = #{status},
+      create_time = #{createTime}
+    where id = #{id}
+  </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+       SELECT
+        a.id,
+        l.id AS label,
+        a.title,
+        a.content,
+        a.author,
+        a.`status`,
+        a.create_time,
+        l.label_name
+    FROM
+        sys_article a
+        JOIN sys_label l ON a.label = l.id
+        where a.id = #{id}
+  </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+       SELECT
+        a.id,
+        l.id AS label,
+        a.title,
+        a.content,
+        a.author,
+        a.`status`,
+        a.create_time,
+        l.label_name
+    FROM
+        sys_article a
+        JOIN sys_label l ON a.label = l.id
+  </select>
+    <select id="count" resultType="int">
+      select  count(*) from sys_article
+    </select>
+    <select id="selectByKeyWord" resultMap="BaseResultMap">
+        SELECT
+        a.id,
+        l.id AS label,
+        a.title,
+        a.content,
+        a.author,
+        a.`status`,
+        a.create_time,
+        l.label_name
+        FROM
+        sys_article a
+        JOIN sys_label l ON a.label = l.id
+        <where>
+             <!-- 随便输入一个这个内容，就可以模糊查询 -->
+            <if test="keyword1 !=null and keyword1 != '' and keyword1 !='undefined' ">
+                a.id=#{keyword1}
+            </if>
+            <if test="keyword2 !=null and keyword2 != '' and keyword2 !='undefined' ">
+                AND a.content=#{keyword2}
+            </if>
+            <if test="keyword3 !=null and keyword3 != '' and keyword3 !='undefined' ">
+                AND a.title=#{keyword2}
+            </if>
+        </where>
+    </select>
+</mapper>

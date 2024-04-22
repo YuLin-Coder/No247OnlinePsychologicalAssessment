@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>在线心理咨询服务平台</title>
+    <link rel="stylesheet" type="text/css" href="../res/layui/css/layui.css">
+    <link rel="stylesheet" type="text/css" href="../res/css/main.css">
+    <!--加载meta IE兼容文件-->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<!--引入公告模块-->
+<div th:replace="client/html/commons/bar::topbar"></div>
+
+
+<div class="content whisper-content leacots-content">
+    <div class="cont w1000">
+        <div class="whisper-list">
+            <div class="item-box">
+                <div class="review-version">
+                    <div class="form-box">
+                        <img class="banner-img" src="../res/img/liuyan.jpg">
+                        <div class="form">
+                            <form class="layui-form" action="">
+                                <div class="layui-form-item layui-form-text">
+                                    <div class="layui-input-block">
+                                        <textarea name="desc" placeholder="既然来了，就说几句" class="layui-textarea"></textarea>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block" style="text-align: right;">
+                                        <button class="layui-btn definite" lay-submit lay-filter="formAction">确定
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="volume">
+                        全部留言 <span>1</span>
+                    </div>
+                    <div class="list-cont">
+                        <div class="cont" th:each="leacots:${leacots}">
+                            <div class="img">
+                                <img src="../res/img/header.png" alt="">
+                            </div>
+                            <div class="text">
+                                <p class="tit"><span class="name" th:text="${leacots.leacotsUser}"></span>
+                                    <span class="data"
+                                          th:text="${#dates.format(leacots.leacotsTime,'yyyy-MM-dd HH:mm:ss')}"></span>
+                                </p>
+                                <p class="ct" th:text="${leacots.content}"></p>
+                                <br/>
+                                <div><span style="font-size: 18px">管理员</span><span style="color: #007DDB">回复:</span>
+                                    <span style="font-size: 15px" th:text="${leacots.replyId.replyContent}"></span><br/>
+                                    <p>回复时间: <span
+                                            th:text="${#dates.format(leacots.replyId.replyTime,'yyyy-MM-dd HH:mm:ss')}"></span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <p style="text-align: center">
+                            <a style="font-size: 18px;" th:href="@{/leacotsUi?page=}+${leacotsInfo.prePage}">上一页</a> <a
+                                style="font-size: 18px" th:href="@{/leacotsUi?page=}+${leacotsInfo.nextPage}">下一页</a>
+                            <span style="font-size: 18px"> - 总数：[[${leacotsInfo.total}]] 条 - 当前页:[[${leacotsInfo.pageNum}]]页</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="demo" style="text-align: center;"></div>
+    </div>
+</div>
+<script type="text/html" id="laytplCont">
+    <div class="cont">
+        <div class="img">
+            {{# if(d.avatar){ }}
+            <img src="{{d.avatar}}" alt="">
+            {{# } else { }}
+            <img src="../res/img/header.png" alt="">
+            {{# } }}
+        </div>
+        <div class="text">
+            <p class="tit"><span class="name">{{d.name}}</span><span class="data">2018/06/06</span></p>
+            <p class="ct">{{d.cont}}</p>
+        </div>
+    </div>
+</script>
+<div th:replace="client/html/commons/bar::footer"></div>
+<script type="text/javascript" src="../res/layui/layui.js" th:src="@{/res/layui/layui.js}"></script>
+<script type="text/javascript">
+    layui.config({
+        base: '../res/js/util/'
+    }).use(['element', 'laypage', 'form', 'menu'], function () {
+        element = layui.element, laypage = layui.laypage, form = layui.form, menu = layui.menu;
+        var $ = layui.$;
+        //按钮
+        form.on('submit(formAction)', function (data) {
+            console.log(JSON.stringify(data.field));
+            $.ajax({
+                url: '/leacots/save',
+                type: 'POST',
+                data: JSON.stringify(data.field),
+                contentType: 'application/json',  //数据类型格式
+                success: function (result) {
+                    if (result.success == true) {
+                        layer.closeAll();
+                        layer.msg('留言成功！', {time: 1 * 1000}, function () {
+                            location.reload();
+                        });
+                    } else {
+                        layer.closeAll();
+                        layer.msg('留言失败，服务器睡着了！', {time: 1 * 1000}, function () {
+                            location.reload();
+                        });
+                    }
+                },
+                error: function (errorMsg) {
+                    alert("数据异常！" + errorMsg);
+                    location.reload();
+                },
+            });
+        });
+        menu.init();
+        menu.submit()
+    });
+</script>
+</body>
+</html>

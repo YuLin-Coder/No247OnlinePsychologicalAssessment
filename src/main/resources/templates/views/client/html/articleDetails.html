@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>在线心理咨询服务平台</title>
+    <link rel="stylesheet" type="text/css" href="../res/layui/css/layui.css" th:href="@{/res/layui/css/layui.css}">
+    <link rel="stylesheet" type="text/css" href="../res/css/main.css" th:href="@{/res/css/main.css}">
+    <!--加载meta IE兼容文件-->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<!--引入公告模块-->
+<div th:replace="client/html/commons/bar::topbar"></div>
+
+<div class="content whisper-content leacots-content details-content">
+    <div class="cont w1000">
+        <div class="whisper-list">
+            <div class="item-box">
+                <div class="review-version">
+                    <div class="form-box">
+                        <div class="article-cont">
+                            <div class="title">
+                                <h3 th:text="${article.title}"></h3>
+                                <p class="cont-info">创建时间：<span class="data"
+                                                                th:text="${#dates.format(article.createTime,'yyyy-MM-dd HH:mm:ss')}"></span>
+                                    标签：<span class="types" th:text="${article.label.labelName}"></span></p>
+                            </div>
+                            <p th:text="${article.content}"></p>
+                            <div class="btn-box">
+                                <a href="" th:href="@{/article/get?id=}+${index}">下一篇</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="demo" style="text-align: center;"></div>
+    </div>
+</div>
+<div th:replace="client/html/commons/bar::footer"></div>
+<script type="text/javascript" src="../res/layui/layui.js"></script>
+<script type="text/javascript">
+    layui.config({
+        base: '../res/js/util/'
+    }).use(['element', 'laypage', 'form', 'menu'], function () {
+        element = layui.element, laypage = layui.laypage, form = layui.form, menu = layui.menu;
+        menu.init();
+        menu.submit();
+    })
+</script>
+<script>
+
+
+</script>
+</body>
+</html>

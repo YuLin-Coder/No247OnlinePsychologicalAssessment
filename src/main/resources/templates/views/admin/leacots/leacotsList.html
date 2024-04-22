@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>留言</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../layuiadmin/layui/css/layui.css" th:href="@{/layuiadmin/layui/css/layui.css}"
+          media="all">
+    <link rel="stylesheet" href="../layuiadmin/style/admin.css" th:href="@{/layuiadmin/style/admin.css}" media="all">
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <form class="layui-form" action="" method="post">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">留言用户</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="leacotsUser" name="leacotsUser" placeholder="请输入留言用户名"
+                                   autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <button class="layui-btn" lay-submit lay-filter="queryForm"
+                                style="margin-left: 120px">立即查询
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="layui-card-body">
+            <!--表格-->
+            <table id="LAY-app-content-list" lay-filter="LAY-app-content-list"></table>
+            <script type="text/html" id="buttonTpl">
+                {{#  if(d.status == 1){ }}
+                <button class="layui-btn layui-btn-xs">已回复</button>
+                {{#  } else { }}
+                <button class="layui-btn layui-btn-primary layui-btn-xs">待回复</button>
+                {{#  } }}
+            </script>
+            <script type="text/html" id="table-content-list">
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="look"><i
+                        class="layui-icon layui-icon-read"></i>查看</a>
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i
+                        class="layui-icon layui-icon-edit"></i>回复</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i
+                        class="layui-icon layui-icon-delete"></i>删除</a>
+
+            </script>
+        </div>
+    </div>
+</div>
+
+<div class="layui-row" id="popUpdateAticle" style="display:none;">
+    <form class="layui-form" method="post">
+        <div style="padding: 20px; background-color: #F2F2F2;">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-card-body">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">留言ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="ids" name="id" readonly lay-verify="required"
+                                   autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">留言用户</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="leacotsUser" id="leacotsUsers" lay-verify="required"
+                                   placeholder="请输入用户"
+                                   autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">留言内容</label>
+                        <div class="layui-input-inline">
+            <textarea id="contents" name="content" lay-verify="required" style="width: 400px; height: 150px;"
+                      autocomplete="off"
+                      class="layui-textarea"></textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">回复内容</label>
+                        <div class="layui-input-inline">
+            <textarea id="replyContents" name="replyContent" lay-verify="required" style="width: 400px; height: 150px;"
+                      autocomplete="off"
+                      class="layui-textarea"></textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">留言状态</label>
+                        <div class="layui-input-inline">
+                            <input type="checkbox" lay-verify="required" lay-filter="status" name="status"
+                                   lay-skin="switch"
+                                   lay-text="已回复|待回复">
+                        </div>
+                    </div>
+                    <button class="layui-btn" lay-submit lay-filter="formBtn"
+                            style="margin-left: 120px">立即提交
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="layui-row" id="popUpdateLook" style="display:none;">
+    <form class="layui-form" method="post">
+        <div style="padding: 20px; background-color: #F2F2F2;">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-card-body">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">留言ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="id1" name="id" readonly lay-verify="required"
+                                   autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">留言用户</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="leacotsUser" readonly id="leacotsUser1" lay-verify="required"
+                                   placeholder="请输入用户"
+                                   autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">留言内容</label>
+                        <div class="layui-input-inline">
+            <textarea id="content1" name="content" readonly lay-verify="required" style="width: 400px; height: 150px;"
+                      autocomplete="off"
+                      class="layui-textarea"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">回复内容</label>
+                        <div class="layui-input-inline">
+            <textarea id="replyContent1" name="replyContent" readonly lay-verify="required" style="width: 400px; height: 150px;"
+                      autocomplete="off"
+                      class="layui-textarea"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script src="../layuiadmin/layui/layui.js" th:src="@{/layuiadmin/layui/layui.js}"></script>
+<script type="text/javascript">
+    layui.config({
+        base: '../../layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use('index', function () {
+    });
+</script>
+<script>
+    layui.use(['table', 'form'], function (exports) {
+        var $ = layui.$, table = layui.table, form = layui.form;
+
+        //表格
+        table.render({
+            elem: '#LAY-app-content-list'
+            , url: '/admin/leacots/list'//模拟接口
+            , cols: [
+                [
+                    {type: 'checkbox', fixed: 'left'}
+                    , {field: 'id', width: 100, title: '留言ID', sort: true}
+                    , {field: 'leacotsUser', title: '留言用户', width: 150}
+                    , {field: 'content', title: '留言内容', width: 300}
+                    , {field: 'leacotsTime', title: '留言时间', width: 200}
+                    , {field: 'status', title: '状态', templet: '#buttonTpl', width: 150, align: 'center'}
+                    , {title: '操作', minWidth: 180, align: 'center', fixed: 'right', toolbar: '#table-content-list'}
+                ]
+            ]
+            , page: true
+            , limit: 10
+            , height: 'full-220'
+            , text: '对不起，加载出现异常！'
+        });
+
+
+        //监听查询点击事件
+        form.on('submit(queryForm)', function (data) {
+            table.render({
+                elem: '#LAY-app-content-list'
+                ,
+                height: 312
+                ,
+                url: '/admin/leacots/list?keyword1=' + data.field.leacotsUser//后台数据接口
+                ,
+                page: true
+                ,
+                cols: [
+                    [
+                        {type: 'checkbox', fixed: 'left'}
+                        , {field: 'id', width: 100, title: '留言ID', sort: true}
+                        , {field: 'leacotsUser', title: '留言用户', width: 150}
+                        , {field: 'content', title: '留言内容', width: 300}
+                        , {field: 'leacotsTime', title: '留言时间', width: 200}
+                        , {field: 'status', title: '状态', templet: '#buttonTpl', width: 150, align: 'center'}
+                        , {title: '操作', minWidth: 180, align: 'center', fixed: 'right', toolbar: '#table-content-list'}
+                    ]
+                ]
+            });
+            return false;
+        });
+        //监听行工具事件
+        table.on('tool(LAY-app-content-list)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'del') {
+                layer.confirm('真的删除ID为\t' + data.id + "\t的留言吗！", function (index) {
+                    //异步像服务器发送删除请求
+                    $.ajax({
+                        url: '/admin/leacots/del',
+                        type: 'GET',
+                        data: {'id': data.id},
+                        success: function (result) {
+                            console.log("数据返回成功！" + result.success)
+                            if (result.success == true) {
+                                layer.msg("删除成功!" + result, {icon: 6});
+                                obj.del();
+                                layer.close(index);
+                                location.reload();
+                            } else {
+                                layer.msg("删除失败!" + result, {icon: 5});
+                                layer.close(index);
+                            }
+                        },
+                        error: function (errorMsg) {
+                            layer.msg("数据异常!" + errorMsg, {icon: 5});
+                            layer.close(index);
+                            location.reload();
+                        },
+                    });
+                });
+            } else if (obj.event == 'edit') {
+                layer.open({
+                    type: 1,
+                    title: "留言编辑",
+                    area: ['600px', '500px'],
+                    content: $("#popUpdateAticle"),
+                    success: function () {
+                        //回显数据
+                        $("#ids").val(data.id);
+                        $("#leacotsUsers").val(data.leacotsUser);
+                        $("#contents").val(data.content);
+                        $("#replyContents").val(data.replyId.replyContent);
+                        form.render();
+                    },
+                });
+            } else if (obj.event == 'look') {
+                //异步请求查看文章
+                layer.open({
+                    type: 1,
+                    title: "留言查看",
+                    area: ['600px', '500px'],
+                    content: $("#popUpdateLook"),
+                    success: function () {
+                        //回显数据
+                        $("#id1").val(data.id);
+                        $("#leacotsUser1").val(data.leacotsUser);
+                        $("#content1").val(data.content);
+                        $("#replyContent1").val(data.replyId.replyContent);
+                        form.render();
+                    },
+                });
+            }
+
+            //回复操作
+            form.on('submit(formBtn)', function (data) {
+                console.log(data);
+                //发送ajax请求
+                $.ajax({
+                    url: '/admin/leacots/update',
+                    data: JSON.stringify(data.field),
+                    type: 'POST',
+                    contentType: 'application/json',  //数据类型格式
+                    success: function (result) {
+                        if (result.success = true) {
+                            layer.closeAll();
+                            layer.msg('更新成功', {time: 1 * 1000}, function () {
+                                location.reload();
+                            });
+                        } else {
+                            layer.closeAll();
+                            layer.msg('更新失败', {time: 1 * 1000}, function () {
+                                location.reload();
+                            });
+                        }
+                    },
+                    error: function (errorMsg) {
+                        alert("数据异常！" + errorMsg);
+                        location.reload();
+                    },
+                });
+                return false;
+            });
+        });
+    });
+</script>
+</body>
+</html>

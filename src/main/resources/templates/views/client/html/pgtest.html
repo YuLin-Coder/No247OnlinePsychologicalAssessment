@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>在线心理咨询服务平台</title>
+    <link rel="stylesheet" type="text/css" href="../res/layui/css/layui.css" th:href="@{/res/layui/css/layui.css}">
+    <link rel="stylesheet" type="text/css" href="../res/css/main.css" th:href="@{/res/css/main.css}">
+    <!--加载meta IE兼容文件-->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<!--引入公告模块-->
+<div th:replace="client/html/commons/bar::topbar"></div>
+
+<div class="content whisper-content">
+    <div class="cont">
+        <div class="whisper-list">
+            <div class="item-box">
+                <table width="75%" border="0" align="center">
+                    <tr>
+                        <td>
+                            <form action="/defdfsdf" method="post">
+                                <span>评分策略：得1分,得5分,得10分,等方式评测</span>
+                                <hr/>
+                                <div class="rds" th:each="topicList:${topicList}">
+                                    <span th:text="${topicList.topicContent}">你愿意一个人独处。</span>
+                                    <ol>
+                                        A:<input type="radio" th:name="${topicList.id}+${topicList.userOp}" value="1">
+                                        是 &nbsp;&nbsp;
+                                        B:<input type="radio" th:name="${topicList.id}+${topicList.userOp}" value="5">
+                                        不确定 &nbsp;&nbsp;
+                                        C:<input type="radio" th:name="${topicList.id}+${topicList.userOp}" value="10">
+                                        不是
+                                    </ol>
+                                    <hr/>
+                                </div>
+                                <input class="btns" type="button" name="submit" value="开始评分" onclick="scorequiz()">
+                                <input type="reset" name="reset" value="重新测试">
+                                你的测评成绩分析：<input id="inputValue" type="text" value="测试后看结果分析" style="color: red"/>
+                            </form>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+<div id="demo" style="text-align: center;"></div>
+</div>
+</div>
+<div th:replace="client/html/commons/bar::footer"></div>
+<script type="text/javascript" src="../res/layui/layui.js" th:src="@{/res/layui/layui.js}"></script>
+<script type="text/javascript" src="/webjars/jquery/3.3.1/jquery.min.js"
+        th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
+<script type="text/javascript">
+    layui.config({
+        base: '../res/js/util/'
+    }).use(['element', 'laypage', 'form', 'menu'], function () {
+        element = layui.element, laypage = layui.laypage, form = layui.form, menu = layui.menu;
+
+    })
+</script>
+<script>
+    function scorequiz() {
+        var arrayObj = new Array([9]);
+        arrayObj[0] = $("input[name='1admin']:checked").val();
+        arrayObj[1] = $("input[name='2admin']:checked").val();
+        arrayObj[2] = $("input[name='3admin']:checked").val();
+        arrayObj[3] = $("input[name='4admin']:checked").val();
+        arrayObj[4] = $("input[name='5admin']:checked").val();
+        arrayObj[5] = $("input[name='6admin']:checked").val();
+        arrayObj[6] = $("input[name='7admin']:checked").val();
+        arrayObj[7] = $("input[name='8admin']:checked").val();
+        arrayObj[8] = $("input[name='9admin']:checked").val();
+        arrayObj[9] = $("input[name='10admin']:checked").val();
+
+        var count = 0;
+        for (var i = 0; i < arrayObj.length; i++) {
+            count += parseInt(arrayObj[i]);
+        }
+        console.log("------------>" + count);
+        //设置文本
+        if (count >= 90) {
+            $(":text").val("分数：" + count + "分," + "典型的外向性格");
+        } else if (count > 70 && count < 90) {
+            $(":text").val("分数：" + count + "分," + "稍外向性格");
+        } else if (count > 50 && count < 70) {
+            $(":text").val("分数：" + count + "分," + "外内混合型性格");
+        } else if (count > 30 && count < 50) {
+            $(":text").val("分数：" + count + "分," + "典型的内向性格");
+        } else {
+            $(":text").val("你有未完成的题目，请完成后提交测试！");
+        }
+        if (count >= 0) {
+            //发送ajax请求
+            $.ajax({
+                url: '/pgtest/add?count='+count,
+                type: 'GET',
+                success: function (result) {
+                    if (result.status = true) {
+                        layer.closeAll();
+                        layer.msg('测试成功', {time: 1 * 1000}, function () {
+                        });
+                    } else {
+                        layer.closeAll();
+                        layer.msg('测试失败', {time: 1 * 1000}, function () {
+                        });
+                    }
+                },
+                error: function (errorMsg) {
+                    alert("数据异常！" + errorMsg);
+                },
+            });
+
+        }
+
+    }
+</script>
+</body>
+</html>

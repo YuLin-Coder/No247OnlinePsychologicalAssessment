@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="header" style="background-color: rgba(0,0,0,0.26)" th:fragment="topbar">
+    <div class="menu-btn">
+        <div class="menu"></div>
+    </div>
+    <h1 class="logo">
+        <a href="/">
+            <span>在线心理咨询服务平台</span>
+            <img src="../res/img/logo.png" th:src="@{/res/img/logo.png}">
+        </a>
+    </h1>
+    <div class="nav" style="color:#e3f6ff">
+        <a style="font-size: 18px" href="/" th:href="@{/}">首页</a>
+        <a style="font-size: 18px" href="/article/list" th:href="@{/article/list}">文章</a>
+        <a style="font-size: 18px" href="/pgtestUi" th:href="@{/pgtestUi}">心理评测</a>
+        <a style="font-size: 18px" href="/leacotsUi" th:href="@{/leacotsUi}">留言</a>
+        <a style="font-size: 18px" href="/noticeClientUi/list" th:href="@{/noticeClientUi/list}">公告</a>
+    </div>
+    <ul class="layui-nav header-down-nav">
+        <li style="font-size: 18px" class="layui-nav-item"><a href="/" th:href="@{/}">首页</a></li>
+        <li style="font-size: 18px" class="layui-nav-item"><a href="/article/list" th:href="@{/article/list}">文章</a>
+        </li>
+        <li style="font-size: 18px" class="layui-nav-item"><a href="/pgtestUi" th:href="@{/pgtestUi}">心理评测</a></li>
+        <li style="font-size: 18px" class="layui-nav-item"><a href="/leacotsUi" th:href="@{/leacotsUi}">留言</a></li>
+        <li style="font-size: 18px" class="layui-nav-item"><a href="/noticeClientUi/list"
+                                                              th:href="@{/noticeClientUi/list}">公告</a></li>
+    </ul>
+    <p class="welcome-text">
+        <span name="name">[[${session.loginName}]]</span>欢迎来到在线心理咨询~
+    </p>
+</div>
+<div class="footer-wrap" th:fragment="footer">
+    <div class="footer w1000">
+        <div class="qrcode">
+            <p style="font-size: 18px;text-align: center">使用QQ扫描二维加心理咨询师</p><br/>
+            <img src="../res/img/lianxi.jpg">
+        </div>
+        <div class="practice-mode">
+            <img src="../res/img/down_img.jpg">
+            <div class="text">
+                <h4 class="title">网站客服联系方式</h4>
+                <p>微信<span class="WeChat">test</span></p>
+                <p>手机<span class="iphone">13101231522</span></p>
+                <p>邮箱<span class="email">test@136.com</span></p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
